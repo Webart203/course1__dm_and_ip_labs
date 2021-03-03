@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <script>
+        function validate()
+        {
+            let input1 = document.getElementById('mnojestvo1').value;
+            let input2 = document.getElementById('mnojestvo2').value;
+            if (!/^[a-z][13579][0-9][02468]( [a-z][13579][0-9][02468])*$/i.test(input1)){
+                alert('Неверно введено 1е множество');
+                return;
+            }
+            if (!/^[a-z][13579][0-9][02468]( [a-z][13579][0-9][02468])*$/i.test(input2)){
+                alert('Неверно введено 2е множество');
+                return;
+            }
+            
+            let mnojestvo1 = input1.split(' ');
+            let mnojestvo2 = input2.split(' ');
+            
+            // Union
+            let union = new Set(mnojestvo1);
+            for (var i in mnojestvo2) {
+                union.add(mnojestvo2[i]);
+            }
+            document.getElementById('Union').innerHTML = Array.from(union).join(' ');
+            
+            // Intersection
+            let intersection = new Set();
+            for (var i in mnojestvo1) {
+                for (var j in mnojestvo2) {
+                    if (mnojestvo1[i] == mnojestvo2[j])
+                        intersection.add(mnojestvo1[i]);
+                }
+            }
+            document.getElementById('Intersection').innerHTML = Array.from(intersection).join(' ');
+            
+            // Difference
+            let difference = new Set();
+            let m = false;
+            for (var i in mnojestvo1) {
+                for (var j in mnojestvo2) {
+                    if (mnojestvo1[i] == mnojestvo2[j])
+                        m = true;
+                }
+                if (m == true) 
+                    m = false;
+                else difference.add(mnojestvo2[i]);
+            }
+            document.getElementById('Difference').innerHTML = Array.from(difference).join(' ');
+            
+            // Addition
+            let addition = new Set();
+            for (var i in mnojestvo1) {
+                for (var j in mnojestvo2) {
+                    if (mnojestvo1[i] == mnojestvo2[j])
+                        m = true;
+                }
+                if (m == true) 
+                    m = false;
+                else addition.add(mnojestvo1[i]);
+            }
+            document.getElementById('Addition').innerHTML = Array.from(addition).join(' ');
+            
+            // SymmetricDifference
+            let symmetricDifference = new Set();
+            for (var i in mnojestvo1) {
+                if (mnojestvo1[i] != mnojestvo2[i]){
+                    symmetricDifference.add(mnojestvo1[i]);
+                    symmetricDifference.add(mnojestvo2[i]);
+                }
+            }
+            document.getElementById('SymmetricDifference').innerHTML = Array.from(symmetricDifference).join(' ');
+            
+            document.getElementById('result').style = 'display: block';
+        }
+        </script>
+    </head>
+    <body>
+        <h2>Введите элементы двух множеств в формате BJCI.</h2>
+        <h3>Первое множество: <input type="text" id="mnojestvo1" size="40"></h3>
+        <h3>Второе множество: <input type="text" id="mnojestvo2" size="40"></h3>
+        <button onclick="validate()" size=20>Рассчитать</button>
+        <div id="result" style='display: none'>
+            <h3>Объединение: <span id="Union"></span></h3>
+            <h3>Пересечение: <span id="Intersection"></span></h3>
+            <h3>Дополнение: <span id="Addition"></span></h3>
+            <h3>Отрицание: <span id="Difference"></span></h3>
+            <h3>Симметричная разность:<span id="SymmetricDifference"></span></h3>
+        </div>
+    </body>
+</html>
