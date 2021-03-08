@@ -3,70 +3,84 @@
         <script>
         function validate()
         {
+            let n = false;
             let input1 = document.getElementById('mnojestvo1').value;
             let input2 = document.getElementById('mnojestvo2').value;
             if (!/^[a-z][13579][0-9][02468]( [a-z][13579][0-9][02468])*$/i.test(input1)){
                 alert('Неверно введено 1е множество');
-                return;
+                    return;
             }
             if (!/^[a-z][13579][0-9][02468]( [a-z][13579][0-9][02468])*$/i.test(input2)){
                 alert('Неверно введено 2е множество');
-                return;
+                    return;
             }
             
+            let bolshee;
+            let menshee;
             let mnojestvo1 = input1.split(' ');
             let mnojestvo2 = input2.split(' ');
             
+            if (mnojestvo1.length > mnojestvo2.length) {
+                bolshee = mnojestvo1.slice();
+                menshee = mnojestvo2.slice();
+            }
+            else {
+                menshee = mnojestvo1.slice();
+                bolshee = mnojestvo2.slice();
+            }
+            
             // Union
-            let union = new Set(mnojestvo1);
-            for (var i in mnojestvo2) {
-                union.add(mnojestvo2[i]);
+            let union = mnojestvo1.slice();
+            for (let i in mnojestvo2) {
+                for (let j in mnojestvo1) {
+                    if (mnojestvo1[j] == mnojestvo2[i])
+                        n = true;
+                }
+                if (!n)
+                    union.push(mnojestvo2[i]);
+                else n = false;
             }
             document.getElementById('Union').innerHTML = Array.from(union).join(' ');
             
             // Intersection
-            let intersection = new Set();
-            for (var i in mnojestvo1) {
-                for (var j in mnojestvo2) {
-                    if (mnojestvo1[i] == mnojestvo2[j])
-                        intersection.add(mnojestvo1[i]);
+            let intersection = [];
+            for (let i = 0; i < menshee.length; i++)
+                for (let j = 0; j < bolshee.length; j++) {
+                    if (bolshee[j] == menshee[i] && intersection.indexOf(menshee[i]) == -1) {
+                        intersection.push(menshee[i]);
+                        break;
+                    }
+                    
                 }
-            }
             document.getElementById('Intersection').innerHTML = Array.from(intersection).join(' ');
             
-            // Difference
-            let difference = new Set();
-            let m = false;
-            for (var i in mnojestvo1) {
-                for (var j in mnojestvo2) {
-                    if (mnojestvo1[i] == mnojestvo2[j])
-                        m = true;
-                }
-                if (m == true) 
-                    m = false;
-                else difference.add(mnojestvo2[i]);
-            }
-            document.getElementById('Difference').innerHTML = Array.from(difference).join(' ');
-            
             // Addition
-            let addition = new Set();
-            for (var i in mnojestvo1) {
-                for (var j in mnojestvo2) {
-                    if (mnojestvo1[i] == mnojestvo2[j])
-                        m = true;
+            let addition = [];
+            for (let j in mnojestvo2) {
+                for (let i in mnojestvo1) {
+                    if (mnojestvo1[i] == mnojestvo2[j] || addition.indexOf(mnojestvo2[j]) != -1) {
+                        n = true;
+                        break;
+                    }
+                        
                 }
-                if (m == true) 
-                    m = false;
-                else addition.add(mnojestvo1[i]);
+                if (n == true) 
+                    n = false;
+                else 
+                    addition.push(mnojestvo2[j]);
             }
             document.getElementById('Addition').innerHTML = Array.from(addition).join(' ');
             
             // SymmetricDifference
-            let symmetricDifference = new Set();
-            for (var i in mnojestvo1) {
-                if (mnojestvo1[i] != mnojestvo2[i]){
-                    symmetricDifference.add(mnojestvo1[i]);
-                    symmetricDifference.add(mnojestvo2[i]);
+            let symmetricDifference = [];
+            for (let i in mnojestvo1) {
+                if (mnojestvo2.indexOf(mnojestvo1[i]) == -1 && symmetricDifference.indexOf(mnojestvo1[i]) == -1) { 
+                    symmetricDifference.push(mnojestvo1[i]);
+                }
+            }
+            for (let i in mnojestvo2) {
+                if (mnojestvo1.indexOf(mnojestvo2[i]) == -1) {
+                    symmetricDifference.push(mnojestvo2[i]);
                 }
             }
             document.getElementById('SymmetricDifference').innerHTML = Array.from(symmetricDifference).join(' ');
@@ -83,8 +97,7 @@
         <div id="result" style='display: none'>
             <h3>Объединение: <span id="Union"></span></h3>
             <h3>Пересечение: <span id="Intersection"></span></h3>
-            <h3>Дополнение: <span id="Addition"></span></h3>
-            <h3>Отрицание: <span id="Difference"></span></h3>
+            <h3>Дополнение(отрицание): <span id="Addition"></span></h3>
             <h3>Симметричная разность:<span id="SymmetricDifference"></span></h3>
         </div>
     </body>
