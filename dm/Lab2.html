@@ -1,0 +1,140 @@
+<html>
+    <head>
+    <script>
+        function validate() {
+            
+            document.getElementById('Properties').innerHTML = "";
+            let tempinput = document.getElementById('para').value;
+            
+            if (!/^[-]*\w+,[-]*\w+( [-]*\w+,[-]*\w+)*$/i.test(tempinput)){
+                alert('Неверный формат ввода!');
+                return;
+            }
+            
+            let input = tempinput.split(' ');
+            
+            let setpara;
+            let x = [];
+            let existx = false;
+            let existy = false;
+            let y = [];
+            let exist = false;
+            
+            let M = new Set();
+            
+            for (let i = 0; i < input.length; i++) {
+                
+                setpara = input[i].split(',');
+                x[i] = setpara[0];
+                y[i] = setpara[1];
+                M.add(x[i]);
+                M.add(y[i]);
+            }
+            
+            
+            for (let i = 0; i < input.length; i++) {
+                existx = false;
+                existy = false;
+                if (x[i] != y[i]) {
+                    for (let j = 0; j < input.length; j++) {
+                        if (i != j && x[j] == y[j]) {
+                            if (x[i] == x[j])
+                                existx = true;
+                            if (y[i] == y[j])
+                                existy = true;
+                            if (existx && existy) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                    }
+                } else 
+                    exist = true;
+                if (exist) {
+                    exist = false;
+                }
+                else {
+                    exist = true;
+                    document.getElementById('Properties').innerHTML += "Отношение нерефлексивно.\n";
+                    break;
+                }
+            }
+            if (!exist) {
+                document.getElementById('Properties').innerHTML += "Отношение рефлексивно.\n";
+            } else 
+                exist = false;
+            
+            for (let i = 0; i < input.length; i++) {
+                if (x[i] != y[i]) {
+                    for (let j = 0; j < input.length; j++) {
+                        if (i != j)
+                            if (x[i] == y[j] && x[j] == y[i]) {
+                                exist = true;
+                                break;
+                            }
+                    }
+                } else 
+                    exist = true;
+                if (exist)
+                    exist = false;
+                else  {
+                    document.getElementById('Properties').innerHTML += "Отношение несимметрично.\n";
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                exist = false;
+                document.getElementById('Properties').innerHTML += "Отношение симметрично.\n";
+            } else 
+                exist = false;
+            
+            //(x[i],y[i])ПРИНАДЛЕЖИТ input ^ (y[i],y[j]) ПРИНАДЛЕЖИТ input =>(x[i],y[j]) ПРИНАДЛЕЖИТ input
+            for (let i = 0; i < input.length; i++) {
+                if (x[i] != y[i]) {
+                    for (let j = 0; j < input.length; j++) {
+                        if (i != j)
+                            if (y[i] == x[j] || x[i] == y[j]) {
+                                for (let k = 0; k < input.length; k++) {
+                                     if (x[i] == x[k] && y[j] == y[k]) {
+                                        exist = true;
+                                        break;
+                                     }
+                                     else 
+                                        exist = false;
+                                }
+                                if (exist)
+                                    break;
+                            }
+                    }
+                } else
+                   exist = true;
+                   
+                if (exist) {
+                    exist = false;
+                }
+                else  {
+                    document.getElementById('Properties').innerHTML += "Отношение нетранзитивно.\n";
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                exist = false;
+                document.getElementById('Properties').innerHTML += "Отношение транзитивно.\n";
+            } else 
+                exist = false;
+            
+            document.getElementById('result').style = 'display: block';
+        }
+    </script>
+    </head>
+    <body>
+    <h2>Элементы разделять "," в парах, пары разделять " ".</h2>
+    <h2>Введите пары элементов в строку (два бинарных отношения): <input type="text" id="para" size="40"></h2>
+    <button onclick="validate()" size=20>Рассчитать</button>
+    <div id="result" style='display: none'>
+        <h3><div id="Properties"></div></h3>
+    </div>
+    </body>
+</html>
