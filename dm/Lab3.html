@@ -4,45 +4,52 @@
         function validation_and_definition(x, y, length1) {
             document.getElementById('Definition').innerHTML = "";
             let tempotnoshenie = document.getElementById('otnoshenie').value;
-            let tempmnojestvo1 = document.getElementById('mnojestvo1').value;
-            let tempmnojestvo2 = document.getElementById('mnojestvo2').value;
             
+            let input = tempotnoshenie.split(/ |\n/);
             
-            if (!/^[-]*\w+,[-]*\w+( )*$/i.test(tempotnoshenie)){
+            line = Math.sqrt(input.length);
+            
+            if ((!/^[0,1]((\s)*[0,1](\s)*)*$/i.test(tempotnoshenie)) || ((line - Math.trunc(line)) != 0) ) {
                 alert('Неверный формат ввода отношения!');
                 return;
             }
-            else if (!/^[-]*\w+((\s)*[-]*\w+(\s)*)*$/i.test(tempmnojestvo1)) {
-                alert('Неверный формат ввода первого множества!');
-                return;
+            
+            let setline = [];
+            setline.length = line;
+            let count = 0;
+            
+            for (let i = 0; i < line; i++) {
+                for (let j = 0; j < line; j++) {
+                    setline[j] = input[i*line + j];
+                    if (setline[j] == 1)
+                        count++;
+                }
+                if (count != 1) {
+                count = 3
+                    break;
+                }
+                count = 0; 
             }
-            else if (!/^[-]*\w+((\s)*[-]*\w+(\s)*)*$/i.test(tempmnojestvo2)) {
-                alert('Неверный формат ввода второго множества!');
-                return;
-            }
             
-            let input = tempotnoshenie.split(',');
-            let element1 = input[0];
-            let element2 = input[1];
             
-            for (let i in mnojestvo1)
-                for (let j in mnojestvo2)
-                    if ((element1 == mnojestvo1[i] && element2 == mnojestvo2[i]) || (element2 == mnojestvo1[i] && element1 == mnojestvo2[i])) {
-                        document.getElementById('Definition').innerHTML = "Отношение является функцией.";
-                        break;
-                    }
-            
-            if (document.getElementById('Definition').innerHTML == "")
+            if (count == 0)
+                document.getElementById('Definition').innerHTML = "Отношение является функцией.";
+            else
                 document.getElementById('Definition').innerHTML = "Отношение не является функцией.";
             document.getElementById('result').style = 'display: block';
         }
     </script>
     </head>
     <body>
-    <h2>Элементы отношения разделять ",", элементы множеств разделять " ".</h2>
-    <h3>Введите отношение: <input type="text" id="otnoshenie" size="39"></h3>
-    <h3>Введите первое множество: <input type="text" id="mnojestvo1" size="40"></h3>
-    <h3>Введите второе множество: <input type="text" id="mnojestvo2" size="40"></h3>
+    <h2>В данной работе необходимо ввести матрицу (отношение), представляющую собой связь двух множеств.</h2>
+    <h2>Вводить можно только 0 и 1 (есть связь или нет связи). </h2>
+    <h2>Данная программа будет определять, является ли отношение функцией.</h2>
+    <h3><textarea type="text" id="otnoshenie"
+	style = 
+	"resize: none;
+	width: 200px;
+	height: 200px;
+	"></textarea></h3>
     <button onclick="validation_and_definition()" size=20>Определить</button>
     <div id="result" style='display: none'>
         <h3><div id="Definition"></div></h3>
